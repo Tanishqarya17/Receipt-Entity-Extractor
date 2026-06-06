@@ -7,7 +7,7 @@
 [![Transformers](https://img.shields.io/badge/Transformers-4.40+-yellow.svg)](https://huggingface.co/docs/transformers)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**🔗 Live Demo:** [Try it on Hugging Face Spaces →](https://huggingface.co/spaces/Tanishq71/receipt-entity-extractor)
+**🔗 Live Demo:** [Try it on Hugging Face Spaces →](https://huggingface.co/spaces/Tanishq71/Receipt-Entity-Extractor)
 
 **🔗 Model:** [Tanishq71/sroie-layoutlmv3 →](https://huggingface.co/Tanishq71/sroie-layoutlmv3)
 
@@ -51,13 +51,13 @@ Primary dataset: **SROIE 2019** (ICDAR Scanned Receipt OCR and Information Extra
 
 ### Image dimensions
 
-![Receipt image dimensions](assets/image_dimensions.png)
+![Receipt image dimensions](assets/image_dimensions.jpeg)
 
 *Most receipts are 500–1000px wide and 1000–2000px tall, but a distinct cluster of high-resolution scans reaches roughly 5000×7000px. This long tail is what makes OCR latency vary so widely and motivated downscaling inputs to 1600px in deployment.*
 
 ### Field length distribution
 
-![Per-field character lengths](assets/field_length_distribution.png)
+![Per-field character lengths](assets/field_length_distribution.jpeg)
 
 *Per-field character-length distributions across the 626 labeled receipts. Date is tightly constrained (8–11 characters) and total is short (4–8), while company and address are long and highly variable — which is why long fields are reported with fuzzy-F1, and why a short, regular field like date is well-suited to a regex fallback.*
 
@@ -89,7 +89,7 @@ A single `receipt_extractor.py` module implements this pipeline end-to-end and p
 
 PaddleOCR performs text detection and recognition, returning words with bounding-box polygons. Boxes are normalized into LayoutLMv3's 0–1000 coordinate space.
 
-![PaddleOCR detections on a sample receipt](assets/ocr_detection_example.png)
+![PaddleOCR detections on a sample receipt](assets/ocr_detection_example.jpeg)
 
 *PaddleOCR text detection on a sample receipt (77 detections), boxes colored by recognition confidence: green ≥ 0.9, orange 0.6–0.9, red < 0.6.*
 
@@ -97,7 +97,7 @@ PaddleOCR performs text detection and recognition, returning words with bounding
 
 Ground-truth field strings are aligned to OCR tokens via fuzzy matching to produce BIO tags — `O`, plus `B-`/`I-` for each of company / date / address / total — for 9 labels total.
 
-![Gold entity labels on a receipt](assets/entity_labels_example.png)
+![Gold entity labels on a receipt](assets/entity_labels_example.jpeg)
 
 *Gold entity labels projected onto a receipt — green = company, orange = date, cyan = address, red = total. These BIO-tagged spans are the supervision signal for fine-tuning.*
 
@@ -114,11 +114,11 @@ Ground-truth field strings are aligned to OCR tokens via fuzzy matching to produ
 - Best checkpoint at **epoch 5** (validation loss 0.0248); training halted at epoch 8.
 - A manual PyTorch training loop (explicit forward / backward / optimizer / scheduler step) rather than the `Trainer` API, for full transparency over every step.
 
-![Hyperparameter sweep](assets/hyperparameter_sweep.png)
+![Hyperparameter sweep](assets/hyperparameter_sweep.jpeg)
 
 *Hyperparameter sweep over three configurations. The baseline (lr 5e-5, weight decay 0.01) reached the best validation token accuracy and was selected for the final training run; a lower learning rate converged more slowly.*
 
-![Training curves with early stopping](assets/training_curves.png)
+![Training curves with early stopping](assets/training_curves.jpeg)
 
 *Fine-tuning dynamics: validation loss reaches its minimum early and then rises while training loss keeps falling — the overfitting signal that best-checkpoint tracking and early stopping guard against. (Curve from a development run; the final model's best checkpoint was epoch 5.)*
 
@@ -146,7 +146,7 @@ Field-specific cleaners (date normalization, decimal-separator fixes, whitespace
 
 ### Qualitative example
 
-![Gold labels vs model predictions](assets/prediction_example.png)
+![Gold labels vs model predictions](assets/prediction_example.jpeg)
 
 *Gold labels (left) versus model predictions (right) on a held-out receipt — 95.7% token accuracy. Company (green), date (orange), address (cyan), and total (red) are all recovered correctly despite a faint, noisy scan.*
 
